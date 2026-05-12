@@ -1,0 +1,73 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# Environment variables
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Build output (regenerable)
+frontend/dist/
+frontend/build/
+
+# Database
+*.db
+*.sqlite3
+
+# Logs
+*.log
+logs/
+
+# Cache
+.cache/
+*.cache
+
+# Testing
+coverage/
+.nyc_output/
+
+# WorkBuddy internal
+.workbuddy/
+
+# Screenshots (local verification artifacts)
+screenshots/
+
+# Diagnostic scripts (not part of the project)
+diag_browser.py
+diag_browser2.py
+full_screenshots.py
+screenshot_verify.py
+check_icons.py
+
+# Backend startup helper (auto-generated)
+start_backend.bat
