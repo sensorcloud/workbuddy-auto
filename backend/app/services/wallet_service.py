@@ -202,15 +202,14 @@ class WalletService:
             if not wallet:
                 return {"success": False, "message": "钱包不存在"}
 
-            # 先从冻结金额扣除
+            # 先从冻结金额扣除，同时扣减余额
             if wallet.frozen >= amount:
                 wallet.frozen = wallet.frozen - amount
             else:
-                # 冻结金额不足，从余额扣
                 remaining = amount - wallet.frozen
                 wallet.frozen = Decimal("0")
-                wallet.balance = wallet.balance - remaining
 
+            wallet.balance = wallet.balance - amount
             wallet.total_consume = wallet.total_consume + amount
 
             # 写入交易记录

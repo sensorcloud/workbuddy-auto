@@ -88,7 +88,12 @@ class PaymentService:
         if db_order.user_id != user_id:
             return {"success": False, "message": "无权限支付此订单"}
 
-        # 计算金额（从 selected_quote 获取）
+        # 计算金额（从 selected_quote 获取，因为 create_order 时 compute_cost/energy_cost 初始为 0）
+        if db_order.selected_quote:
+            db_order.compute_cost = db_order.selected_quote.get("compute_cost", 0)
+            db_order.energy_cost = db_order.selected_quote.get("energy_cost", 0)
+            db_order.total_cost = db_order.compute_cost + db_order.energy_cost
+
         compute_cost = db_order.compute_cost or 0
         energy_cost = db_order.energy_cost or 0
         total_cost = Decimal(str(compute_cost + energy_cost))

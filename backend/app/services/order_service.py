@@ -16,14 +16,20 @@ class OrderService:
     @staticmethod
     def create_order(db: Session, order: OrderCreate) -> Order:
         """创建订单"""
+        # 从 selected_quote 提取费用
+        selected_quote = order.selected_quote or {}
+        compute_cost = float(selected_quote.get("compute_cost", 0) or 0)
+        energy_cost = float(selected_quote.get("energy_cost", 0) or 0)
+        total_cost = compute_cost + energy_cost
+
         db_order = Order(
             id=f"order-{datetime.utcnow().strftime('%Y%m%d%H%M%S')}",
             user_id=order.user_id,
             asset_id=order.asset_id,
             status="pending",
-            compute_cost=0.0,
-            energy_cost=0.0,
-            total_cost=0.0,
+            compute_cost=compute_cost,
+            energy_cost=energy_cost,
+            total_cost=total_cost,
             selected_quote=order.selected_quote,
             container_image=order.container_image,
             dataset_location=order.dataset_location,
