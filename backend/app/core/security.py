@@ -7,11 +7,32 @@ from typing import Any, Union
 import jwt
 from passlib.context import CryptContext
 from jose import JWTError, jwt
+from sqlalchemy.orm import Session
+from fastapi import Depends, HTTPException, status
+from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from app.core.config import settings
-from app.schemas.response import ApiResponse
+from app.database import get_db
 
 # 密码加密上下文
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+security = HTTPBearer()
+
+async def get_current_user(
+    credentials: HTTPAuthorizationCredentials = Depends(security),
+    db: Session = Depends(get_db)
+) -> dict:
+    """从 Authorization header 提取当前用户信息"""
+    token = credentials.credentials
+    try:
+        user_id = get_current_user_id(token)
+        from app.models.user import User
+        user = db.query(User).filter(User.id == user_id).first()
+        if not user:
+            raise HTTPException(status_code=401, detail="用户不存在")
+        return {"user_id": user.id, "role": user.role, "username": user.username}
+    except Exception:
+        raise HTTPException(status_code=401, detail="无效的认证凭证")
 
 def create_access_token(subject: Union[str, Any]) -> str:
     """

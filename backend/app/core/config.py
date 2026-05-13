@@ -4,6 +4,7 @@
 """
 from pydantic_settings import BaseSettings
 from typing import List
+from decimal import Decimal
 import os
 
 class Settings(BaseSettings):
@@ -54,6 +55,15 @@ class Settings(BaseSettings):
     
     # 消息队列配置
     RABBITMQ_URL: str = os.getenv("RABBITMQ_URL", "amqp://guest:guest@localhost:5672//")
+    
+    # Phase 2 配置
+    PAYMENT_TIMEOUT_MINUTES: int = 30  # 支付超时时间
+    WALLET_INITIAL_BALANCE: Decimal = Decimal("10000")  # 开发环境新用户赠送金额
+    REFUND_AUTO_APPROVE_MAX: Decimal = Decimal("1000")  # 自动审核退款上限
+    ALERT_CHECK_INTERVAL_SECONDS: int = 10  # 告警检查间隔
+    METRIC_COLLECT_INTERVAL_SECONDS: int = 5  # 监控采集间隔
+    BILL_GENERATION_DAY: int = 1  # 每月几号生成账单
+    MOCK_PAYMENT_ENABLED: bool = True  # 是否启用模拟支付
     
     class Config:
         case_sensitive = True

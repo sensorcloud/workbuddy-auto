@@ -12,7 +12,7 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
     try:
         db_user = auth_service.register_user(db, user)
         access_token = auth_service.create_access_token(
-            data={"sub": db_user.username, "role": db_user.role}
+            data={"sub": db_user.id, "role": db_user.role}
         )
         return {
             "access_token": access_token,
@@ -41,7 +41,7 @@ async def login(user: UserLogin, db: Session = Depends(get_db)):
         )
     
     access_token = auth_service.create_access_token(
-        data={"sub": db_user.username, "role": db_user.role}
+        data={"sub": db_user.id, "role": db_user.role}
     )
     return {
         "access_token": access_token,

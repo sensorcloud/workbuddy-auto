@@ -9,6 +9,9 @@ import {
   MonitorOutlined,
   DatabaseOutlined,
   FileTextOutlined,
+  WalletOutlined,
+  CreditCardOutlined,
+  AlertOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 
@@ -46,6 +49,11 @@ const LayoutComponent: React.FC = () => {
       label: '监控中心',
     },
     {
+      key: '/alert-rules',
+      icon: <AlertOutlined />,
+      label: '告警规则',
+    },
+    {
       key: '/assets',
       icon: <DatabaseOutlined />,
       label: '资产管理',
@@ -54,6 +62,16 @@ const LayoutComponent: React.FC = () => {
       key: '/orders',
       icon: <FileTextOutlined />,
       label: '订单管理',
+    },
+    {
+      key: '/billing',
+      icon: <CreditCardOutlined />,
+      label: '账单中心',
+    },
+    {
+      key: '/wallet',
+      icon: <WalletOutlined />,
+      label: '我的钱包',
     },
     {
       key: '/user',

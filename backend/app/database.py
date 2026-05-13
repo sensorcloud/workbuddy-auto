@@ -17,9 +17,12 @@ SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 def init_db():
     """初始化数据库"""
+    # 导入所有模型确保 create_all 能创建所有表
+    from app.models import User, Asset, Order, Payment, Wallet, Transaction
+    from app.models import MonthlyBill, Invoice, MetricSample, AlertRule, Alert, SpotConfig
     from app.models.base import Base
     Base.metadata.create_all(bind=engine)
-    print("Database initialized")
+    print("Database initialized with all Phase 2 tables")
 
 def close_db():
     """关闭数据库连接"""
