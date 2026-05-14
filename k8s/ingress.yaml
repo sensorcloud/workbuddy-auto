@@ -1,0 +1,50 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: compute-electric-ingress
+  namespace: compute-electric
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    # Uncomment below if using cert-manager for TLS
+    # cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  ingressClassName: nginx
+  rules:
+    - host: compute-electric.local
+      http:
+        paths:
+          # API routes -> backend
+          - path: /api
+            pathType: Prefix
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 8000
+          - path: /docs
+            pathType: Prefix
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 8000
+          - path: /openapi.json
+            pathType: Exact
+            backend:
+              service:
+                name: backend
+                port:
+                  number: 8000
+          # All other routes -> frontend (SPA)
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: frontend
+                port:
+                  number: 80
+  # Uncomment for TLS:
+  # tls:
+  #   - hosts:
+  #       - compute-electric.local
+  #     secretName: compute-electric-tls

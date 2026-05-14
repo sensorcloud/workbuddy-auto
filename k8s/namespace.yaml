@@ -1,0 +1,30 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: compute-electric
+  labels:
+    name: compute-electric
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: backend-config
+  namespace: compute-electric
+data:
+  APP_ENV: "production"
+  DATABASE_URL: "sqlite:///data/app.db"
+  CORS_ORIGINS: "http://localhost,http://localhost:3000,http://compute-electric.local"
+  LOG_LEVEL: "info"
+  SCHEDULER_ENABLED: "true"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: backend-secret
+  namespace: compute-electric
+type: Opaque
+stringData:
+  SECRET_KEY: "change-me-to-a-secure-random-key-in-production"
+  JWT_SECRET_KEY: "change-me-to-a-secure-random-key-in-production"
+  # For production, use: echo -n "your-key" | base64
+  # and use `data:` instead of `stringData:`

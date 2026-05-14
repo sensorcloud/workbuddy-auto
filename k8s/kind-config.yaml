@@ -1,0 +1,58 @@
+# kind configuration for local development cluster
+# Usage: kind create cluster --config kind-config.yaml
+
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+
+# Cluster name
+name: compute-electric
+
+# Network configuration
+networking:
+  # Allow custom pod/subnet CIDRs
+  podSubnet: "10.244.0.0/16"
+  serviceSubnet: "10.96.0.0/12"
+  # Disable default CNI to allow custom CNI (optional)
+  # disableDefaultCNI: true
+  # IPv6 (optional)
+  # ipFamily: dual
+
+# Node configuration
+nodes:
+  # Control plane node (also runs workloads)
+  - role: control-plane
+    # Port mappings for accessing services from host machine
+    # Map node port 30000 -> host port 8080 (frontend via NodePort/Ingress)
+    # Map node port 30001 -> host port 8000 (backend direct access)
+    extraPortMappings:
+      - containerPort: 30000
+        hostPort: 8080
+        protocol: TCP
+      - containerPort: 30001
+        hostPort: 8000
+        protocol: TCP
+    # Add extra mounts for local development (optional)
+    # extraMounts:
+    #   - hostPath: ./local-data
+    #     containerPath: /data
+    # kubeadm patches (optional)
+    kubeadmConfigPatches:
+      - |
+        kind: InitConfiguration
+        nodeRegistration:
+          kubeletExtraArgs:
+            node-labels: "ingress-ready=true"
+
+  # Optional: add worker nodes
+  # - role: worker
+  # - role: worker
+
+# Enable local registry (for loading images without pushing to remote registry)
+# This creates a registry at localhost:5001
+containerdConfigPatches:
+  - |-
+    [plugins."io.containerd.grpc.v1.cri".registry.mirrors."localhost:5001"]
+      endpoint = ["http://kind-registry:5000"]
+
+# (Alternative) Use kind's built-in registry (run: kind create cluster --config kind-config.yaml --name compute-electric)
+# Then load images: kind load docker-image <image>:<tag> --name compute-electric
